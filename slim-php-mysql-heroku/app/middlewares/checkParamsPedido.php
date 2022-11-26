@@ -11,11 +11,11 @@ class CheckParamsPedido
     {
         $response = new Response();
         $params = $request->getParsedBody();
-        if (isset($params['perfilUsuario'], $params['descripcion'])) {
+        if (isset($params['nombreCliente'], $params['estado'], $params['idMesa'])) {
 
-            if ($params['perfilUsuario'] != "" && $params['descripcion'] != "") {
-                $response->getBody()->write(("Campo vacio."));
-            }
+            if ($params['nombreCliente'] != "" && $params['estado'] != "" && $params['idMesa'] != "") {
+                $response = $handler->handle($request);
+            } else   $response->getBody()->write(("Campo vacio."));
         } else $response->getBody()->write(("Faltan datos"));
 
         return $response;

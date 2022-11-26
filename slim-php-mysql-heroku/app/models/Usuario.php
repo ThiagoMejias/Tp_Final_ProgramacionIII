@@ -32,10 +32,30 @@ class Usuario
     public static function obtenerUsuario($usuario)
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT id, usuario, clave FROM usuarios WHERE usuario = :usuario");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM usuarios WHERE usuario = :usuario");
         $consulta->bindValue(':usuario', $usuario, PDO::PARAM_STR);
         $consulta->execute();
         return  $consulta->fetchObject('Usuario');
+    }
+
+
+    public static function ObtenerPerfil($request)
+    {
+        $header = $request->getHeaderLine("Authorization");
+        if ($header != null) {
+            $token = trim(explode("Bearer", $header)[1]);
+            $data = AutentificadorJWT::ObtenerData($token);
+            return $data->tipo;
+        }
+    }
+    public static function ObtenerId($request)
+    {
+        $header = $request->getHeaderLine("Authorization");
+        if ($header != null) {
+            $token = trim(explode("Bearer", $header)[1]);
+            $data = AutentificadorJWT::ObtenerData($token);
+            return $data->id;
+        }
     }
 
     // public static function modificarUsuario($id, $nombre, $clave)

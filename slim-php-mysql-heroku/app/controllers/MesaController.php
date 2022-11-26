@@ -1,6 +1,7 @@
 <?php
 require_once './models/Mesa.php';
 require_once './interfaces/IApiUsable.php';
+require_once './models/Usuario.php';
 
 class MesaController extends Mesa implements IApiUsable
 {
@@ -11,12 +12,11 @@ class MesaController extends Mesa implements IApiUsable
     $estado = $parametros['estado'];
 
 
-
     $mesa = new Mesa();
     $mesa->estado = $estado;
     $mesa->crearMesa();
 
-    $payload = json_encode(array("mensaje" => "Usuario creado con exito"));
+    $payload = json_encode(array("mensaje" => "Mesa creada con exito"));
 
     $response->getBody()->write($payload);
     return $response
@@ -33,6 +33,33 @@ class MesaController extends Mesa implements IApiUsable
   }
 
 
+  public function ModificarUno($request, $response, $args)
+  {
+
+    $parametros = $request->getParsedBody();
+    $perfil = Usuario::ObtenerPerfil($request);
+    if (isset($parametros["idMesa"]) && self::verificarMesa($parametros["idMesa"]) != false) {
+      $estado = $parametros['estado'];
+      if ($estado == 'cerrada') {
+        if ($perfil == 'socio') {
+          Mesa::modificarEstado($parametros["idMesa"], $estado);
+          $payload = json_encode(array("mensaje" => "Estado Modificado"));
+        } else  $payload = json_encode(array("mensaje" => "Para cerrar la mesa se debe ser socio"));
+      } else {
+        Mesa::modificarEstado($parametros["idMesa"], $estado);
+        $payload = json_encode(array("mensaje" => "Estado modificado"));
+      }
+    } else $payload = json_encode(array("mensaje" => "id Invalido"));
+
+
+
+
+
+
+    $response->getBody()->write($payload);
+    return $response
+      ->withHeader('Content-Type', 'application/json');
+  }
 
   // public function TraerUno($request, $response, $args)
   // {

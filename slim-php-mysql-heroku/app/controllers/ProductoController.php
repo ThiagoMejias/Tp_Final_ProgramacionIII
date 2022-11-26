@@ -4,21 +4,21 @@ require_once './interfaces/IApiUsable.php';
 
 class ProductoController extends Producto implements IApiUsable
 {
+
+
+
   public function CargarUno($request, $response, $args)
   {
     $parametros = $request->getParsedBody();
 
-    $perfilUsuario = $parametros['perfilUsuario'];
-    $descripcion = $parametros['perfilUsuario'];
-
-
-
+    $perfil = $parametros['perfil'];
+    $descripcion = $parametros['descripcion'];
 
     $p = new Producto();
-    $p->perfilUsuario = $perfilUsuario;
+    $p->perfil = $perfil;
     $p->descripcion = $descripcion;
-
     $payload = json_encode(array("mensaje" => "Producto creado con exito"));
+    $p->crearProducto();
 
     $response->getBody()->write($payload);
     return $response

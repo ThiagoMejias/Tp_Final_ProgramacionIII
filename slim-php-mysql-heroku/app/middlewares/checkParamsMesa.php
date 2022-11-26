@@ -15,7 +15,7 @@ class CheckParamsMesa
 
             if ($params['estado'] == "") {
                 $response->getBody()->write(("Campo vacio."));
-            }
+            } else $response = $handler->handle($request);
         } else $response->getBody()->write(("Faltan datos"));
 
         return $response;

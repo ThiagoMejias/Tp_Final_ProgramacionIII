@@ -11,9 +11,12 @@ class CheckParams
     {
         $response = new Response();
         $params = $request->getParsedBody();
+
         if (isset($params['perfil'], $params['usuario'], $params['clave'])) {
 
             if ($params['perfil'] != "" && $params['usuario'] != "" && $params['clave'] != "") {
+                $response = $handler->handle($request);
+            } else {
                 $response->getBody()->write(("Campo vacio."));
             }
         } else $response->getBody()->write(("Faltan datos"));

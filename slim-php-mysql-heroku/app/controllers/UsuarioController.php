@@ -45,7 +45,7 @@ class UsuarioController extends Usuario implements IApiUsable
     if ($user) {
       if (password_verify($params['clave'], $user->clave) || $params['clave'] == $user->clave) {
 
-        $datos = array('tipo' => $user->perfil);
+        $datos = array('tipo' => $user->perfil, 'id' => $user->id);
         $token = AutentificadorJWT::CrearToken($datos);
 
         $payload = json_encode(array('TOKEN:' => $token));
