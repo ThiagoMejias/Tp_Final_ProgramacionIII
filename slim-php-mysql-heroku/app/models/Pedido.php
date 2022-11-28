@@ -9,7 +9,6 @@ class Pedido
     public $id;
     public $idMesa;
     public $nombreCliente;
-    public $duracion;
     public $estado;
     public $pedidoCliente;
     public $urlFoto;
@@ -35,7 +34,7 @@ class Pedido
     public static function obtenerTodos()
     {
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM pedido");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * from pedido");
         $consulta->execute();
         return $consulta->fetchAll(PDO::FETCH_CLASS, 'Pedido');
     }
@@ -113,6 +112,7 @@ class Pedido
                 $productoPedido->idPedido = $idPedido;
                 $productoPedido->idProducto = $orden->id;
                 $productoPedido->idMesa = $idMesa;
+
                 $productoPedido->crearProductoPedido();
             } else $retorno = false;
         }

@@ -19,11 +19,13 @@ class Producto
 
     public static function verificarProducto($descripcion)
     {
+
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM productos where descripcion = :descripcion");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM Productos where descripcion = :descripcion");
         $consulta->bindValue(':descripcion', $descripcion);
         $consulta->execute();
-        return $consulta->fetchObject('Producto');
+        $obj = $consulta->fetchObject();
+        return $obj;
     }
 
 
@@ -38,7 +40,6 @@ class Producto
         $consulta->bindValue(':descripcion', $this->descripcion);
         $consulta->bindValue(':precio', $this->precio);
         $consulta->execute();
-
         return $objAccesoDatos->obtenerUltimoId();
     }
 
@@ -74,7 +75,8 @@ class Producto
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
         $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM productos");
         $consulta->execute();
-        return $consulta->fetchAll(PDO::FETCH_CLASS, 'Producto');
+
+        return $consulta->fetchAll(PDO::FETCH_CLASS);
     }
 
     public static function mostrarDatos($array)

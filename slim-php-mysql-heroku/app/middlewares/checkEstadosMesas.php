@@ -15,7 +15,7 @@ class CheckEstadosMesas
         if (isset($params['estado'])) {
 
             if (
-                $params['estado'] == "cliente esperando pedido" || $params['estado'] == "   "
+                $params['estado'] == "cliente esperando pedido" || $params['estado'] == "cliente comiendo"
                 || $params['estado'] == "cliente pagando" || $params['estado'] == "cerrada"
             ) {
                 $response = $handler->handle($request);
