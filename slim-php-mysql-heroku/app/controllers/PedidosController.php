@@ -54,6 +54,22 @@ class PedidosController extends Pedido implements IApiUsable
     }
 
 
+    public function cargarFoto($request, $response, $args)
+    {
+        $parametros = $request->getParsedBody();
+        if (isset($_FILES["img"], $parametros["idPedido"])) {
+            if (Pedido::vincularImagen($_FILES["img"], $parametros["idPedido"])) {
+                $payload = json_encode(array("mensaje" => "Imagen correctamente vinculada"));
+            } else $payload = json_encode(array("mensaje" => "Pedido Invalido"));
+        } else $payload = json_encode(array("mensaje" => "Faltan datos"));
+
+        $response->getBody()->write($payload);
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    }
+
+
+
     public function CargarProductos($request, $response, $args)
     {
         if (isset($request->getParsedBody()['listaProductos'], $request->getParsedBody()['codigoPedido'])) {

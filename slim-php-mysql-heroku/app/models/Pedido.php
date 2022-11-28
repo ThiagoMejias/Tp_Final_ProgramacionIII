@@ -1,6 +1,8 @@
 <?php
 
 require_once "Producto.php";
+require_once "Files.php";
+
 
 class Pedido
 {
@@ -49,6 +51,15 @@ class Pedido
         return $consulta->fetch(PDO::FETCH_ASSOC);
     }
 
+    public static function ObtenerPedidoPorId($idPedido)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM pedido where id = :id");
+        $consulta->bindValue(':id', $idPedido);
+        $consulta->execute();
+        return $consulta->fetchObject('Pedido');
+    }
+
 
     public static function VerificarPedido($codigoPedido)
     {
@@ -60,6 +71,30 @@ class Pedido
         return $consulta->fetchObject('Pedido');
     }
 
+    public static function vincularImagen($img, $idPedido)
+    {
+
+        $pedido = self::ObtenerPedidoPorId($idPedido);
+        if ($pedido != false) {
+            $archivo = new Files("../Mesas");
+            $nombre = "/Mesa_" . $pedido->idMesa . "pedido_" . $pedido->id . ".jpg";
+            $archivo->subirArchivo($nombre);
+            self::setUrlImg($nombre, $idPedido);
+            return true;
+        }
+        return false;
+    }
+
+    public static function setUrlImg($urlFoto, $idPedido)
+    {
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+        $consulta = $objAccesoDatos->prepararConsulta("UPDATE pedido set urlFoto = :urlFoto where id = :idPedido");
+        $consulta->bindValue(':urlFoto', $urlFoto);
+        $consulta->bindValue(':idPedido', $idPedido);
+        $consulta->execute();
+
+        return $consulta->fetchObject('Pedido');
+    }
 
     public static function CargarProductosPedido($idPedido, $idMesa, $productos)
     {

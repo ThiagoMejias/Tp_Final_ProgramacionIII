@@ -75,6 +75,8 @@ $app->group('/mesas', function (RouteCollectorProxy $group) {
 $app->group('/productos', function (RouteCollectorProxy $group) {
 
   $group->get('[/]', \ProductoController::class . ':TraerTodos');
+  $group->post('/generarCsv', \ProductoController::class . ':generarCsv');
+  $group->post('/cargarCsv', \ProductoController::class . ':cargarCsv');
   $group->post('[/]', \ProductoController::class . ':CargarUno')->add(new CheckTokenSocio())->add(new CheckPerfil())->add(new CheckParamsProducto());
 });
 
@@ -84,6 +86,7 @@ $app->group('/pedidos', function (RouteCollectorProxy $group) {
   $group->post('/productos', \PedidosController::class . ':CargarProductos')->add(new CheckTokenMozo());
   $group->get('/{idMesa}/{idPedido}', \PedidosController::class . ':obtenerDemora');
   $group->get('/obtenerCuenta/{idMesa}/{idPedido}', \PedidosController::class . ':obtenerCuenta')->add(new CheckTokenMozo());
+  $group->post('/setImg', \PedidosController::class . ':CargarFoto')->add(new CheckTokenMozo());
 });
 
 $app->group('/productosPedidos', function (RouteCollectorProxy $group) {

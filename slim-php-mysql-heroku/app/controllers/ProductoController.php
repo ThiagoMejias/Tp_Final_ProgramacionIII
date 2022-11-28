@@ -4,9 +4,6 @@ require_once './interfaces/IApiUsable.php';
 
 class ProductoController extends Producto implements IApiUsable
 {
-
-
-
   public function CargarUno($request, $response, $args)
   {
     $parametros = $request->getParsedBody();
@@ -34,65 +31,31 @@ class ProductoController extends Producto implements IApiUsable
       ->withHeader('Content-Type', 'application/json');
   }
 
+  public function generarCsv($request, $response, $args)
+  {
+    if (Producto::crearCsv())
+      $payload =  json_encode("Archivo creado correctamente");
+    else $payload =  json_encode("Algo ocurrio mal generando el archivo");
+    $response->getBody()->write($payload);
+    return $response
+      ->withHeader('Content-Type', 'application/json');
+  }
 
 
-  // public function TraerUno($request, $response, $args)
-  // {
-  //   // Buscamos usuario por nombre
-  //   $usr = $args['usuario'];
-  //   $usuario = Usuario::obtenerUsuario($usr);
-  //   $payload = json_encode($usuario);
-
-  //   $response->getBody()->write($payload);
-  //   return $response
-  //     ->withHeader('Content-Type', 'application/json');
-  // }
 
 
-  // public function ModificarUno($request, $response, $args)
-  // {
+  public function cargarCsv($request, $response, $args)
+  {
+    if (isset($_FILES['csv'])) {
+      $archivo = fopen($_FILES['csv']['tmp_name'], "r");
+      if ($archivo != null) {
+        Producto::actualizarCsv($archivo);
+        $payload =  json_encode("Productos actualizados");
+      }
+    } else $payload =  json_encode("Archivo no cargado");
 
-  //   $parametros = $request->getParsedBody();
-  //   $id = $parametros['id'];
-  //   $clave = $parametros['clave'];
-  //   $nombre = $parametros['nombre'];
-  //   Usuario::modificarUsuario($id, $nombre, $clave);
-
-  //   $payload = json_encode(array("mensaje" => "Usuario modificado con exito"));
-
-  //   $response->getBody()->write($payload);
-  //   return $response
-  //     ->withHeader('Content-Type', 'application/json');
-  // }
-
-
-  // public function BorrarUno($request, $response, $args)
-  // {
-  //   $parametros = $request->getParsedBody();
-
-  //   $usuarioId = $parametros['usuarioId'];
-  //   Usuario::borrarUsuario($usuarioId);
-
-  //   $payload = json_encode(array("mensaje" => "Usuario borrado con exito"));
-
-  //   $response->getBody()->write($payload);
-  //   return $response
-  //     ->withHeader('Content-Type', 'application/json');
-  // }
-
-  // public function Login($request, $response, $args)
-  // {
-  //   $params = $request->getParsedBody();
-
-  //   $user = Usuario::obtenerUsuario($params['usuario']);
-
-  //   if (password_verify($params['clave'], $user->clave))
-  //     $response->getBody()->write("Logeado Correctamente");
-  //   else {
-  //     $response->getBody()->write("Error en clave o usuario");
-  //   }
-
-  //   return $response
-  //     ->withHeader('Content-Type', 'application/json');
-  // }
+    $response->getBody()->write($payload);
+    return $response
+      ->withHeader('Content-Type', 'application/json');
+  }
 }
